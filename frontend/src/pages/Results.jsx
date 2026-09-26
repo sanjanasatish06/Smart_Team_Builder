@@ -14,7 +14,7 @@ function Results({ teams, onBack }) {
         </div>
 
         <button className="back-button" onClick={onBack}>
-          ← Back
+          ← Back to Team Setup
         </button>
       </div>
 

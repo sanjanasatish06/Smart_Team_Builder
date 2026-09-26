@@ -1,4 +1,19 @@
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
+async function extractErrorMessage(response, fallback) {
+  try {
+    const data = await response.json();
+    if (data && data.detail) {
+      return typeof data.detail === "string"
+        ? data.detail
+        : JSON.stringify(data.detail);
+    }
+  } catch (err) {
+    // response had no JSON body — fall through to the default message
+  }
+  return fallback;
+}
 
 export async function addParticipant(participant) {
   const response = await fetch(`${API_BASE_URL}/participants`, {
@@ -10,7 +25,7 @@ export async function addParticipant(participant) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to add participant.");
+    throw new Error(await extractErrorMessage(response, "Failed to add participant."));
   }
 
   return response.json();
@@ -20,7 +35,19 @@ export async function getParticipants() {
   const response = await fetch(`${API_BASE_URL}/participants`);
 
   if (!response.ok) {
-    throw new Error("Failed to fetch participants.");
+    throw new Error(await extractErrorMessage(response, "Failed to fetch participants."));
+  }
+
+  return response.json();
+}
+
+export async function deleteParticipant(participantId) {
+  const response = await fetch(`${API_BASE_URL}/participants/${participantId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to delete participant."));
   }
 
   return response.json();
@@ -36,7 +63,7 @@ export async function generateTeams(teamData) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to generate teams.");
+    throw new Error(await extractErrorMessage(response, "Failed to generate teams."));
   }
 
   return response.json();

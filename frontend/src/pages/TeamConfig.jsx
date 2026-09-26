@@ -1,5 +1,5 @@
 import React from "react";
-function TeamConfig({ participants, onGenerate }) {
+function TeamConfig({ participants, onGenerate, onBack }) {
   const [teamSize, setTeamSize] = React.useState(2);
   const [error, setError] = React.useState("");
 
@@ -27,6 +27,10 @@ function TeamConfig({ participants, onGenerate }) {
   return (
     <div className="config-page">
       <div className="config-container">
+
+        <button className="back-button" onClick={onBack}>
+          ← Back to Participants
+        </button>
 
         <p className="page-label">STEP 2</p>
 

@@ -2,101 +2,68 @@ import { useState } from "react";
 import Participants from "./pages/Participants";
 import TeamConfig from "./pages/TeamConfig";
 import Results from "./pages/Results";
-import { sampleTeams } from "./data/sampleData";
 import LoadingState from "./components/LoadingState";
 import ErrorMessage from "./components/ErrorMessage";
+import { generateTeams } from "./services/api";
 
 function App() {
   const [page, setPage] = useState("home");
-const [participants, setParticipants] = useState([]);
-const [teams, setTeams] = useState(sampleTeams);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState("");
-const createMockTeams = (participants, teamSize) => {
-  const generatedTeams = [];
+  const [participants, setParticipants] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  for (let i = 0; i < participants.length; i += teamSize) {
-    const members = participants.slice(i, i + teamSize);
+  const handleGenerate = async (data) => {
+    setError("");
+    setLoading(true);
 
-    generatedTeams.push({
-      team_id: generatedTeams.length + 1,
-      team_name: `Team ${String.fromCharCode(65 + generatedTeams.length)}`,
-      score: 90,
-      members: members.map((member) => ({
-        id: member.id,
-        name: member.name,
-        role: member.preferred_role,
-      })),
-      score_breakdown: {
-        skill_diversity: 90,
-        role_coverage: 88,
-        experience_balance: 89,
-        interest_compatibility: 91,
-        preference_satisfaction: 90,
-      },
-      reasons: [
-        "Good skill diversity",
-        "Balanced team size",
-        "Compatible interests",
-        "Members are assigned to their preferred roles",
-      ],
-    });
-  }
+    try {
+      const response = await generateTeams(data);
+      setTeams(response.teams);
+      setLoading(false);
+      setPage("results");
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || "Failed to generate teams. Please try again.");
+    }
+  };
 
-  return generatedTeams;
-};
-
-if (page === "participants") {
-  return (
-    <Participants
-      onContinue={(participantData) => {
-        setParticipants(participantData);
-        setPage("config");
-      }}
-    />
-  );
-}
-
-if (page === "config") {
-  if (loading) {
-    return <LoadingState />;
-  }
-
-  return (
-    <>
-      {error && <ErrorMessage message={error} />}
-
-      <TeamConfig
+  if (page === "participants") {
+    return (
+      <Participants
         participants={participants}
-        onGenerate={(data) => {
-  setError("");
-  setLoading(true);
-
-  console.log("Team generation data:", data);
-
-  setTimeout(() => {
-    const generatedTeams = createMockTeams(
-      data.participants,
-      data.team_size
-    );
-
-    setTeams(generatedTeams);
-    setLoading(false);
-    setPage("results");
-  }, 1500);
-}}
+        setParticipants={setParticipants}
+        onContinue={() => setPage("config")}
       />
-    </>
-  );
-}
-if (page === "results") {
-  return (
-    <Results
-      teams={teams}
-      onBack={() => setPage("config")}
-    />
-  );
-}
+    );
+  }
+
+  if (page === "config") {
+    if (loading) {
+      return <LoadingState />;
+    }
+
+    return (
+      <>
+        {error && <ErrorMessage message={error} />}
+
+        <TeamConfig
+          participants={participants}
+          onGenerate={handleGenerate}
+          onBack={() => setPage("participants")}
+        />
+      </>
+    );
+  }
+
+  if (page === "results") {
+    return (
+      <Results
+        teams={teams}
+        onBack={() => setPage("config")}
+      />
+    );
+  }
 
   return (
     <div className="app">
@@ -164,7 +131,7 @@ if (page === "results") {
           <div className="team-preview">
             <div className="preview-header">
               <div>
-                <p>Generated Team</p>
+                <p>Example Preview</p>
                 <h3>Team Alpha</h3>
               </div>
 

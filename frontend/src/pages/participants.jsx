@@ -1,24 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ParticipantForm from "../components/ParticipantForm";
 import ParticipantCard from "../components/ParticipantCard";
+import ErrorMessage from "../components/ErrorMessage";
+import { addParticipant, getParticipants, deleteParticipant } from "../services/api";
 
-function Participants({ onContinue }) {
-  const [participants, setParticipants] = useState([]);
+function Participants({ participants, setParticipants, onContinue }) {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const addParticipant = (participant) => {
-    setParticipants((current) => [
-      ...current,
-      {
-        ...participant,
-        id: Date.now(),
-      },
-    ]);
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadParticipants() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await getParticipants();
+        if (!ignore) {
+          setParticipants(response.participants);
+        }
+      } catch (err) {
+        if (!ignore) {
+          setError(err.message || "Failed to load participants.");
+        }
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadParticipants();
+
+    return () => {
+      ignore = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleAdd = async (participantData) => {
+    setError("");
+
+    try {
+      await addParticipant(participantData);
+      const response = await getParticipants();
+      setParticipants(response.participants);
+    } catch (err) {
+      setError(err.message || "Failed to add participant.");
+    }
   };
 
-  const removeParticipant = (id) => {
-    setParticipants((current) =>
-      current.filter((participant) => participant.id !== id)
-    );
+  const handleRemove = async (id) => {
+    setError("");
+
+    try {
+      await deleteParticipant(id);
+      const response = await getParticipants();
+      setParticipants(response.participants);
+    } catch (err) {
+      setError(err.message || "Failed to delete participant.");
+    }
   };
 
   return (
@@ -33,8 +75,10 @@ function Participants({ onContinue }) {
         </p>
       </div>
 
+      {error && <ErrorMessage message={error} />}
+
       <div className="participant-layout">
-        <ParticipantForm onAdd={addParticipant} />
+        <ParticipantForm onAdd={handleAdd} />
 
         <div className="participant-list-section">
           <div className="section-heading">
@@ -47,7 +91,11 @@ function Participants({ onContinue }) {
             </div>
           </div>
 
-          {participants.length === 0 ? (
+          {loading ? (
+            <div className="empty-state">
+              <h3>Loading participants...</h3>
+            </div>
+          ) : participants.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">+</div>
               <h3>No participants yet</h3>
@@ -61,7 +109,7 @@ function Participants({ onContinue }) {
                 <ParticipantCard
                   key={participant.id}
                   participant={participant}
-                  onRemove={removeParticipant}
+                  onRemove={handleRemove}
                 />
               ))}
             </div>
@@ -70,7 +118,7 @@ function Participants({ onContinue }) {
           {participants.length >= 2 && (
             <button
               className="continue-button"
-              onClick={() => onContinue(participants)}
+              onClick={onContinue}
             >
               Continue to Team Setup →
             </button>

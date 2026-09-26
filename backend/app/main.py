@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-
+import os
 from app.database import Base, engine
 from app import models  # noqa: F401  (ensures models are registered before create_all)
 from app.routes import participants, teams
@@ -16,12 +16,24 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Smart Team Builder API")
 
 # CORS - allow the frontend (Vite default port) to talk to this backend
+
+
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+frontend_origin = os.environ.get("FRONTEND_ORIGIN", "")
+if frontend_origin:
+    allowed_origins.extend(
+        origin.strip()
+        for origin in frontend_origin.split(",")
+        if origin.strip()
+    )
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
