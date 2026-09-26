@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Participants from "./pages/Participants";
+import Participants from "./pages/participants";
 import TeamConfig from "./pages/TeamConfig";
 import Results from "./pages/Results";
 import LoadingState from "./components/LoadingState";
