@@ -196,13 +196,7 @@ function App() {
                   Start Building Teams →
                 </button>
 
-                <button
-                  className="secondary-outline-button"
-                  onClick={handleQuickDemo}
-                  disabled={demoLoading}
-                >
-                  ⚡ Try 12-Person Live Demo
-                </button>
+             
               </div>
 
               {/* 5-Factor Feature Pillars */}
