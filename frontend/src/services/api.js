@@ -9,7 +9,7 @@ async function extractErrorMessage(response, fallback) {
         ? data.detail
         : JSON.stringify(data.detail);
     }
-  } catch (err) {
+  } catch {
     // response had no JSON body — fall through to the default message
   }
   return fallback;
@@ -68,3 +68,27 @@ export async function generateTeams(teamData) {
 
   return response.json();
 }
+
+export async function seedParticipants(reset = true) {
+  const response = await fetch(`${API_BASE_URL}/participants/seed?reset=${reset}`, {
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to seed sample participants."));
+  }
+
+  return response.json();
+}
+
+export async function clearParticipants() {
+  const response = await fetch(`${API_BASE_URL}/participants`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to clear participants."));
+  }
+
+  return response.json();
+}

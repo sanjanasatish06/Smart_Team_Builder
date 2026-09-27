@@ -39,3 +39,23 @@ def delete_participant(participant_id: int, db: Session = Depends(get_db)):
     if not deleted:
         raise HTTPException(status_code=404, detail="Participant not found.")
     return {"message": "Participant deleted successfully"}
+
+
+@router.post("/participants/seed")
+def seed_participants(reset: bool = True, db: Session = Depends(get_db)):
+    try:
+        seeded = crud.seed_default_participants(db, reset=reset)
+        return {"participants": seeded, "message": f"Successfully seeded {len(seeded)} participants."}
+    except SQLAlchemyError:
+        logger.exception("Database error while seeding participants")
+        raise HTTPException(status_code=500, detail="Database error occurred while seeding participants.")
+
+
+@router.delete("/participants")
+def clear_all_participants(db: Session = Depends(get_db)):
+    try:
+        count = crud.clear_participants(db)
+        return {"message": f"Cleared {count} participants."}
+    except SQLAlchemyError:
+        logger.exception("Database error while clearing participants")
+        raise HTTPException(status_code=500, detail="Database error occurred while clearing participants.")

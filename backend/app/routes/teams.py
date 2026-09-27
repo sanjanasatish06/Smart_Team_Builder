@@ -23,6 +23,8 @@ def generate_teams_endpoint(request: schemas.GenerateTeamsRequest):
 
     try:
         result = generate_teams(participants, request.team_size)
+        if request.project_requirements:
+            result["project_requirements"] = request.project_requirements.model_dump()
     except Exception:
         logger.exception("Matching engine raised an exception during generate_teams()")
         raise HTTPException(status_code=500, detail="Matching engine failed to generate teams.")

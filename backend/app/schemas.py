@@ -1,5 +1,5 @@
 from pydantic import BaseModel, field_validator
-from typing import List
+from typing import List, Optional
 
 
 ALLOWED_EXPERIENCE_LEVELS = {"Beginner", "Intermediate", "Advanced"}
@@ -71,9 +71,17 @@ class ParticipantWithId(ParticipantBase):
     id: int
 
 
+class ProjectRequirements(BaseModel):
+    project_name: Optional[str] = None
+    project_description: Optional[str] = None
+    required_skills: Optional[List[str]] = None
+    preferred_roles: Optional[List[str]] = None
+
+
 class GenerateTeamsRequest(BaseModel):
     team_size: int
     participants: List[ParticipantWithId]
+    project_requirements: Optional[ProjectRequirements] = None
 
     @field_validator("team_size")
     @classmethod
@@ -84,4 +92,4 @@ class GenerateTeamsRequest(BaseModel):
 
 
 class TeamsResponse(BaseModel):
-    teams: list
+    teams: list
