@@ -58,6 +58,13 @@ function WorkflowHeader({ currentStep, onNavigate, participantCount = 0 }) {
       <div className="workflow-actions">
         <button
           className="header-ghost-btn"
+          onClick={() => onNavigate("saved")}
+          title="View Saved Teams & Formations"
+        >
+          📁 Saved Teams
+        </button>
+        <button
+          className="header-ghost-btn"
           onClick={() => onNavigate("home")}
           title="Return to Landing Page"
         >

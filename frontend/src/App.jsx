@@ -5,6 +5,7 @@ import Results from "./pages/Results";
 import LoadingState from "./components/LoadingState";
 import ErrorMessage from "./components/ErrorMessage";
 import WorkflowHeader from "./components/WorkflowHeader";
+import SavedTeamsView from "./components/SavedTeamsView";
 import { generateTeams, seedParticipants } from "./services/api";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
   const handleWorkflowNavigate = (targetStep) => {
     setError("");
     if (targetStep === "home") setPage("home");
+    else if (targetStep === "saved") setPage("saved");
     else if (targetStep === "participants") setPage("participants");
     else if (targetStep === "project" || targetStep === "config") {
       if (participants.length >= 2) setPage("project");
@@ -116,7 +118,18 @@ function App() {
           projectRequirements={projectRequirements}
           onBack={() => setPage("project")}
           onNavigateToParticipants={() => setPage("participants")}
+          onTeamsChange={setTeams}
         />
+      )}
+
+      {/* SAVED TEAMS VIEW */}
+      {page === "saved" && !loading && (
+        <div className="saved-teams-page-container">
+          <SavedTeamsView
+            onBack={() => setPage(teams.length > 0 ? "results" : "participants")}
+            onNavigateToBuilder={() => setPage("participants")}
+          />
+        </div>
       )}
 
       {/* LANDING PAGE */}
@@ -132,6 +145,13 @@ function App() {
             </div>
 
             <div className="nav-right">
+              <button
+                className="nav-secondary-btn"
+                onClick={() => setPage("saved")}
+                title="View Saved Teams & Formations"
+              >
+                📁 Saved Teams
+              </button>
               <button
                 className="nav-secondary-btn"
                 onClick={handleQuickDemo}

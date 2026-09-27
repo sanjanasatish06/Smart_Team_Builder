@@ -91,4 +91,71 @@ export async function clearParticipants() {
   }
 
   return response.json();
-}
+}
+
+export async function saveTeams(saveData) {
+  const response = await fetch(`${API_BASE_URL}/saved-teams`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(saveData),
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to save teams."));
+  }
+
+  return response.json();
+}
+
+export async function getSavedTeams(groupId = null, saveType = null) {
+  const params = new URLSearchParams();
+  if (groupId) params.append("group_id", groupId);
+  if (saveType) params.append("save_type", saveType);
+  const qs = params.toString();
+  const url = qs ? `${API_BASE_URL}/saved-teams?${qs}` : `${API_BASE_URL}/saved-teams`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to fetch saved teams."));
+  }
+
+  return response.json();
+}
+
+export async function getSavedTeam(teamId) {
+  const response = await fetch(`${API_BASE_URL}/saved-teams/${teamId}`);
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to fetch saved team."));
+  }
+
+  return response.json();
+}
+
+export async function deleteSavedTeam(teamId) {
+  const response = await fetch(`${API_BASE_URL}/saved-teams/${teamId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to delete saved team."));
+  }
+
+  return response.json();
+}
+
+export async function clearSavedTeams() {
+  const response = await fetch(`${API_BASE_URL}/saved-teams`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(await extractErrorMessage(response, "Failed to clear saved teams."));
+  }
+
+  return response.json();
+}
+
+

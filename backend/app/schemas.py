@@ -92,4 +92,72 @@ class GenerateTeamsRequest(BaseModel):
 
 
 class TeamsResponse(BaseModel):
-    teams: list
+    teams: list
+
+
+class SavedTeamCreate(BaseModel):
+    team_name: str
+    score: float
+    score_breakdown: dict
+    reasons: List[str]
+    members: List[dict]
+    save_type: Optional[str] = None
+    participant_ids: Optional[List[int]] = None
+    project_name: Optional[str] = None
+    project_description: Optional[str] = None
+
+    @field_validator("team_name")
+    @classmethod
+    def team_name_not_empty(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("Team name cannot be empty.")
+        return v.strip()
+
+
+class SaveTeamsRequest(BaseModel):
+    teams: List[SavedTeamCreate]
+    group_id: Optional[str] = None
+    save_type: Optional[str] = None  # "individual" | "formation"
+    project_name: Optional[str] = None
+    project_description: Optional[str] = None
+    project_requirements: Optional[ProjectRequirements] = None
+
+    @field_validator("teams")
+    @classmethod
+    def teams_not_empty(cls, v: List[SavedTeamCreate]) -> List[SavedTeamCreate]:
+        if not v or len(v) == 0:
+            raise ValueError("At least one team must be provided to save.")
+        return v
+
+
+class SavedTeamResponse(BaseModel):
+    id: int
+    group_id: Optional[str] = None
+    save_type: Optional[str] = None
+    team_name: str
+    score: float
+    score_breakdown: dict
+    reasons: List[str]
+    members: List[dict]
+    participant_ids: List[int]
+    project_name: Optional[str] = None
+    project_description: Optional[str] = None
+    created_at: Optional[str] = None
+
+
+class SavedFormationResponse(BaseModel):
+    group_id: str
+    project_name: Optional[str] = None
+    project_description: Optional[str] = None
+    created_at: Optional[str] = None
+    teams: List[SavedTeamResponse]
+
+
+class SavedTeamsListResponse(BaseModel):
+    teams: List[SavedTeamResponse]
+    individual_teams: Optional[List[SavedTeamResponse]] = None
+    formations: Optional[List[SavedFormationResponse]] = None
+    total: int
+    message: Optional[str] = None
+
+
