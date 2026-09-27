@@ -163,24 +163,27 @@ function Participants({ participants, setParticipants, onContinue }) {
         </div>
 
         <div className="roster-quick-actions">
-          <button
-            type="button"
-            className="action-btn secondary-btn"
-            onClick={handleSeed}
-            disabled={loading}
-          >
-            ⚡ Load Sample Hackathon Roster (12)
-          </button>
-          {participants.length > 0 && (
-            <button
-              type="button"
-              className="action-btn ghost-danger-btn"
-              onClick={handleClear}
-              disabled={loading}
-            >
-              Clear Roster
-            </button>
-          )}
+ {participants.length === 0 && (
+  <button
+    type="button"
+    className="action-btn secondary-btn"
+    onClick={handleSeed}
+    disabled={loading}
+  >
+    ⚡ Load Sample Hackathon Roster (12)
+  </button>
+)}
+
+{participants.length > 0 && (
+  <button
+    type="button"
+    className="action-btn ghost-danger-btn"
+    onClick={handleClear}
+    disabled={loading}
+  >
+    Clear Roster
+  </button>
+)}
         </div>
       </div>
 

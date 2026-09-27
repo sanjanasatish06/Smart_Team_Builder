@@ -3,11 +3,11 @@ import TeamIntelligenceView from "../components/TeamIntelligenceView";
 
 function getRoleAccentColor(role = "") {
   const r = role.toLowerCase();
-  if (r.includes("ai") || r.includes("ml")) return "#9b51e0";
-  if (r.includes("front") || r.includes("ui") || r.includes("ux")) return "#397bea";
-  if (r.includes("back") || r.includes("data") || r.includes("sql")) return "#00b4d8";
-  if (r.includes("devops") || r.includes("cloud") || r.includes("sec")) return "#f77f00";
-  return "#2ec4b6";
+  if (r.includes("ai") || r.includes("ml")) return "#607254";
+  if (r.includes("front") || r.includes("ui") || r.includes("ux")) return "#7F9163";
+  if (r.includes("back") || r.includes("data") || r.includes("sql")) return "#5B7065";
+  if (r.includes("devops") || r.includes("cloud") || r.includes("sec")) return "#8F7D58";
+  return "#6F8265";
 }
 
 function Results({
@@ -251,7 +251,7 @@ function EnhancedTeamCard({ team, onInspectIntelligence }) {
                 <div
                   className="member-avatar-circle"
                   style={{
-                    background: `linear-gradient(135deg, ${roleColor}, #1d3557)`,
+                    background: roleColor,
                   }}
                 >
                   {member.name.charAt(0).toUpperCase()}
@@ -386,7 +386,7 @@ function EnhancedTeamCard({ team, onInspectIntelligence }) {
 function FactorBar({ label, weight, value }) {
   const numVal = Math.round(value);
   const color =
-    numVal >= 80 ? "#65d99c" : numVal >= 60 ? "#6da5ff" : "#f7a072";
+    numVal >= 80 ? "#5F8A62" : numVal >= 60 ? "#97A87A" : "#B98545";
 
   return (
     <div className="factor-bar-row">

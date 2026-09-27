@@ -1,10 +1,10 @@
 function getRoleColor(role = "") {
   const r = role.toLowerCase();
-  if (r.includes("ai") || r.includes("ml")) return "#9b51e0";
-  if (r.includes("front") || r.includes("ui") || r.includes("ux")) return "#397bea";
-  if (r.includes("back") || r.includes("data") || r.includes("sql")) return "#00b4d8";
-  if (r.includes("devops") || r.includes("cloud") || r.includes("sec")) return "#f77f00";
-  return "#2ec4b6";
+  if (r.includes("ai") || r.includes("ml")) return "#607254";
+  if (r.includes("front") || r.includes("ui") || r.includes("ux")) return "#7F9163";
+  if (r.includes("back") || r.includes("data") || r.includes("sql")) return "#5B7065";
+  if (r.includes("devops") || r.includes("cloud") || r.includes("sec")) return "#8F7D58";
+  return "#6F8265";
 }
 
 function ParticipantCard({ participant, onRemove }) {
@@ -16,7 +16,7 @@ function ParticipantCard({ participant, onRemove }) {
       <div className="card-top-row">
         <div
           className="participant-avatar-badge"
-          style={{ background: `linear-gradient(135deg, ${roleColor}, #1d3557)` }}
+          style={{ background: roleColor }}
         >
           {participant.name.charAt(0).toUpperCase()}
         </div>

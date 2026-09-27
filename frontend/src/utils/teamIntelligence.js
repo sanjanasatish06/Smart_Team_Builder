@@ -202,13 +202,13 @@ export function deriveTeamIntelligence(team, projectRequirements = null) {
   let readinessColor;
   if (compositeReadinessScore >= 85) {
     readinessLevel = "Elite Hackathon Readiness (Tier 1)";
-    readinessColor = "#65d99c";
+    readinessColor = "#5F8A62";
   } else if (compositeReadinessScore >= 70) {
     readinessLevel = "Strong Contender (Tier 2)";
-    readinessColor = "#6da5ff";
+    readinessColor = "#7F9163";
   } else {
     readinessLevel = "Needs Alignment (Tier 3)";
-    readinessColor = "#f5a623";
+    readinessColor = "#B98545";
   }
 
   return {
